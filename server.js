@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import jsonServer from "json-server";
+import cors from "cors";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,6 +11,7 @@ const server = jsonServer.create();
 const router = jsonServer.router(path.join(__dirname, "db.json"));
 const middlewares = jsonServer.defaults();
 
+server.use(cors());
 server.use(jsonServer.bodyParser);
 server.use(middlewares);
 
@@ -30,10 +32,10 @@ server.post("/register", (req, res) => {
   }
 
   const newUser = {
-    id: getNextId(), 
+    id: getNextId(),
     name,
     email,
-    password, 
+    password,
   };
 
   users.push(newUser);
@@ -58,7 +60,7 @@ server.post("/login", (req, res) => {
 
 server.use(router);
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`🚀 JSON Server running on http://localhost:${PORT}`);
+  console.log(`🚀 JSON Server running on port ${PORT}`);
 });
